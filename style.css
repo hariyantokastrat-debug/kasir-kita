@@ -1,0 +1,30 @@
+:root { --bg:#f4f6f9; --card:#fff; --primary:#2563eb; --text:#111; }
+* { box-sizing:border-box; margin:0; padding:0; font-family:system-ui, sans-serif; }
+body { background:var(--bg); color:var(--text); padding:1rem; }
+header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+nav button { margin:0 .3rem; padding:.5rem 1rem; border:none; background:#ddd; cursor:pointer; border-radius:4px; }
+nav button.active { background:var(--primary); color:#fff; }
+.tab { display:none; background:var(--card); padding:1rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.1); }
+.tab.active { display:block; }
+.pos-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.product-list ul, .cart ul { list-style:none; max-height:300px; overflow-y:auto; }
+.product-list li, .cart li { display:flex; justify-content:space-between; padding:.5rem; border-bottom:1px solid #eee; cursor:pointer; }
+.cart li { cursor:default; }
+.summary { margin:1rem 0; }
+button { padding:.6rem 1rem; background:var(--primary); color:#fff; border:none; border-radius:4px; cursor:pointer; margin:.3rem 0; }
+table { width:100%; border-collapse:collapse; margin-top:1rem; }
+th,td { padding:.5rem; border:1px solid #ccc; text-align:left; }
+input,select { padding:.5rem; width:100%; margin:.3rem 0; }
+.note { font-size:.85rem; color:#666; margin-top:.5rem; }
+
+/* PWA Install */
+#installBtn { position:fixed; bottom:1rem; right:1rem; background:#10b981; padding:.8rem 1.2rem; border-radius:30px; cursor:pointer; }
+
+/* PRINT RECEIPT (Thermal 80mm) */
+@media print {
+  body * { visibility:hidden; }
+  #receipt, #receipt * { visibility:visible; }
+  #receipt { position:absolute; left:0; top:0; width:80mm; padding:5mm; font-family:monospace; font-size:12px; }
+  .receipt-print .line { border-top:1px dashed #000; margin:5px 0; }
+  .receipt-print .row { display:flex; justify-content:space-between; }
+}
