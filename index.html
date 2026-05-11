@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KasirKita PWA</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <!-- Library untuk Excel & PDF (bisa didownload ke libs/ untuk offline penuh) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1 id="storeName">Nama Toko</h1>
+    <nav>
+      <button data-tab="pos">Kasir</button>
+      <button data-tab="inventory">Stok</button>
+      <button data-tab="reports">Laporan</button>
+      <button data-tab="admin">Admin</button>
+      <button data-tab="sync">Backup & Sync</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- KASIR -->
+    <section id="pos" class="tab active">
+      <div class="pos-grid">
+        <div class="product-list">
+          <input type="text" id="searchProduct" placeholder="Cari barang...">
+          <ul id="productList"></ul>
+        </div>
+        <div class="cart">
+          <h3>Keranjang</h3>
+          <ul id="cartList"></ul>
+          <div class="summary">
+            <label>Pajak (%) <input type="number" id="taxRate" value="0" min="0" max="100"></label>
+            <p>Subtotal: <span id="subtotal">0</span></p>
+            <p>Pajak: <span id="tax">0</span></p>
+            <h3>Total: <span id="total">0</span></h3>
+          </div>
+          <button id="payBtn">Bayar & Cetak</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STOK / INVENTORY -->
+    <section id="inventory" class="tab">
+      <h2>Manajemen Barang</h2>
+      <form id="productForm">
+        <input type="text" id="prodName" placeholder="Nama Barang" required>
+        <input type="text" id="prodCategory" placeholder="Jenis/Kategori" list="catList" required>
+        <datalist id="catList"></datalist>
+        <input type="number" id="prodBuy" placeholder="Harga Beli" required>
+        <input type="number" id="prodSell" placeholder="Harga Jual" required>
+        <input type="number" id="prodStock" placeholder="Stok Awal" required>
+        <button type="submit">Simpan Barang</button>
+      </form>
+      <h3>Stok Masuk/Keluar</h3>
+      <form id="stockForm">
+        <select id="stockProd" required></select>
+        <select id="stockType"><option value="in">Masuk</option><option value="out">Keluar</option></select>
+        <input type="number" id="stockQty" placeholder="Jumlah" required>
+        <button type="submit">Update Stok</button>
+      </form>
+      <table id="inventoryTable">
+        <thead><tr><th>Nama</th><th>Kategori</th><th>Beli</th><th>Jual</th><th>Stok</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- LAPORAN -->
+    <section id="reports" class="tab">
+      <h2>Laporan Keuangan</h2>
+      <div class="filters">
+        <input type="date" id="repStart"><input type="date" id="repEnd">
+        <button id="genReport">Generate</button>
+        <button id="exportExcel">Export Excel</button>
+      </div>
+      <div id="reportResult">
+        <p>Transaksi: <span id="repCount">0</span></p>
+        <p>Pendapatan Kotor: <span id="repGross">0</span></p>
+        <p>Keuntungan Bersih: <span id="repNet">0</span></p>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin" class="tab">
+      <h2>Pengaturan Toko & Pengguna</h2>
+      <form id="storeForm">
+        <input type="text" id="adminStoreName" placeholder="Nama Toko">
+        <input type="text" id="adminOwner" placeholder="Nama Pemilik">
+        <button type="submit">Simpan Pengaturan</button>
+      </form>
+      <h3>Tambah Pengguna</h3>
+      <form id="userForm">
+        <input type="text" id="userName" placeholder="Username" required>
+        <input type="password" id="userPass" placeholder="Password" required>
+        <select id="userRole"><option value="cashier">Kasir</option><option value="admin">Admin</option></select>
+        <button type="submit">Tambah</button>
+      </form>
+      <ul id="userList"></ul>
+    </section>
+
+    <!-- BACKUP & SYNC -->
+    <section id="sync" class="tab">
+      <h2>Backup, Restore & Sync Multi-PC</h2>
+      <p>Gunakan JSON untuk sinkronisasi ke PC utama pemilik.</p>
+      <button id="exportJson">Export Database (JSON)</button>
+      <input type="file" id="importJson" accept=".json">
+      <p class="note">💡 Cara Sync: Export dari semua PC → Kumpulkan ke 1 PC → Import (Data akan digabung/di-update)</p>
+    </section>
+  </main>
+
+  <div id="installBtn" hidden>Pasang Aplikasi</div>
+
+  <!-- Struk Print (Hidden by default) -->
+  <div id="receipt" class="receipt-print">
+    <div id="receiptContent"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
