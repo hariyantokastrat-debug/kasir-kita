@@ -321,15 +321,27 @@ function setupSync() {
 // UTILS
 function formatRupiah(n) { return new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR'}).format(n); }
 
-// PWA
-function registerSW() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').then(() => console.log('SW registered'));
-  }
-}
-window.addEventListener('beforeinstallprompt', e => {
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+// Deteksi ketersediaan instalasi
+window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
-  const btn = document.getElementById('installBtn');
-  btn.hidden = false;
-  btn.onclick = () => e.prompt();
+  deferredPrompt = e;
+  installBtn.hidden = false;
+  installBtn.textContent = ' INSTAL APLIKASI KASIR (1-KLIK)';
+});
+
+// Trigger instalasi saat tombol diklik
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  installBtn.hidden = true;
+  
+  // Munculkan prompt native browser
+  deferredPrompt.prompt();
+  
+  // Tangkap respons user
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log(`User installation choice: ${outcome}`);
+  deferredPrompt = null;
 });
